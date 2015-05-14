@@ -79,7 +79,7 @@ import os
 
 # If True, the south application will be automatically added to the
 # INSTALLED_APPS setting.
-USE_SOUTH = True
+USE_SOUTH = False
 
 
 ########################
@@ -256,22 +256,7 @@ INSTALLED_APPS = (
     'django_jinja',
     # can be moved to a local settings
     'debug_toolbar',
-)
-
-# List of processors used by RequestContext to populate the context.
-# Each one should be a callable that takes the request object as its
-# only parameter and returns a dictionary to add to the context.
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.contrib.messages.context_processors.messages",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.static",
-    "django.core.context_processors.media",
-    "django.core.context_processors.request",
-    "django.core.context_processors.tz",
-    "mezzanine.conf.context_processors.settings",
-    "mezzanine.pages.context_processors.page",
+    'django_extensions',
 )
 
 # List of middleware classes to use. Order is important; in the request phase,
@@ -294,7 +279,7 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the following if using any of the SSL settings:
     # "mezzanine.core.middleware.SSLRedirectMiddleware",
     "mezzanine.pages.middleware.PageMiddleware",
-    "mezzanine.core.middleware.FetchFromCacheMiddleware",
+    # "mezzanine.core.middleware.FetchFromCacheMiddleware",
 )
 
 # Store these package names here as they may change in the future since
@@ -302,21 +287,52 @@ MIDDLEWARE_CLASSES = (
 PACKAGE_NAME_FILEBROWSER = "filebrowser_safe"
 PACKAGE_NAME_GRAPPELLI = "grappelli_safe"
 
+# List of processors used by RequestContext to populate the context.
+# Each one should be a callable that takes the request object as its
+# only parameter and returns a dictionary to add to the context.
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.contrib.messages.context_processors.messages",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.static",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+    "django.core.context_processors.tz",
+    "mezzanine.conf.context_processors.settings",
+    "mezzanine.pages.context_processors.page",
+)
+
 # Django Template settings
 TEMPLATES = [
     {
         "BACKEND": "django_jinja.backend.Jinja2",
         "APP_DIRS": True,
-        "DIRS": [os.path.join(PROJECT_ROOT, 'templates')],
+        "DIRS": [os.path.join(PROJECT_ROOT, 'jinja_templates')],
         "OPTIONS": {
-            "match_extension": ".jinja",
+            "match_extension": ".html",
+            "match_regex": r"^(?!admin|debug_toolbar/).*",
             "newstyle_gettext": True,
+            "extensions": [
+                "jinja2.ext.do",
+                "jinja2.ext.loopcontrols",
+                "jinja2.ext.with_",
+                "jinja2.ext.i18n",
+                "jinja2.ext.autoescape",
+                # 'compressor.contrib.jinja2ext.CompressorExtension',
+                "django_jinja.builtins.extensions.CsrfExtension",
+                "django_jinja.builtins.extensions.CacheExtension",
+                "django_jinja.builtins.extensions.TimezoneExtension",
+                "django_jinja.builtins.extensions.UrlsExtension",
+                "django_jinja.builtins.extensions.StaticFilesExtension",
+                "django_jinja.builtins.extensions.DjangoFiltersExtension",
+                "django_jinja.builtins.extensions.DjangoExtraFiltersExtension",
+                "extensions.mezzanine_extensions.MezzanineFilterExtension",
+            ],
+            "context_processors": TEMPLATE_CONTEXT_PROCESSORS,
             "autoescape": True,
-            "auto_reload": True,
+            "auto_reload": DEBUG,
             "translation_engine": "django.utils.translation",
-            # "extensions": [
-            #     'compressor.contrib.jinja2ext.CompressorExtension',
-            # ]
         }
     },
     {
@@ -329,7 +345,14 @@ TEMPLATES = [
     },
 ]
 
-TEMPLATE_EXTENSIONS = ['jinja', 'html']
+# Enable bytecode cache (default: False)
+JINJA2_BYTECODE_CACHE_ENABLE = False
+
+# Cache backend name for bytecode cache (default: "default")
+# JINJA2_BYTECODE_CACHE_NAME = "default"
+
+# Specify custom bytecode cache subclass (default: None)
+# JINJA2_BYTECODE_CACHE_BACKEND = "path.to.you.cache.class"
 
 
 #########################
