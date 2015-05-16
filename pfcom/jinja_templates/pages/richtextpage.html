@@ -1,0 +1,10 @@
+{% extends "pages/page.jinja" %}
+
+{% block main -%}
+{{ super() -}}
+
+{# {% editable page.richtextpage.content %} #}
+{{ page.richtextpage.content|richtext_filters|safe }}
+{# {% endeditable %} #}
+
+{%- endblock %}

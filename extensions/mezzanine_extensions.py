@@ -9,3 +9,4 @@ class MezzanineFilterExtension(Extension):
     def __init__(self, environment):
         super(MezzanineFilterExtension, self).__init__(environment)
         environment.globals["is_installed"] = mezzanine_tags.is_installed
+        environment.filters["richtext_filters"] = mezzanine_tags.richtext_filters

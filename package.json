@@ -1,0 +1,37 @@
+{
+  "name": "patrick.forringer.com",
+  "version": "1.0.0",
+  "description": "my blog",
+  "main": "host.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/destos/patrick.forringer.com.git"
+  },
+  "keywords": [
+    "blog",
+    "django",
+    "webpack"
+  ],
+  "author": "Patrick Forringer",
+  "license": "GNU v3",
+  "bugs": {
+    "url": "https://github.com/destos/patrick.forringer.com/issues"
+  },
+  "homepage": "https://github.com/destos/patrick.forringer.com#readme",
+  "dependencies": {
+    "coffee-loader": "^0.7.2",
+    "coffee-script": "^1.9.2",
+    "css-loader": "^0.12.1",
+    "extract-text-webpack-plugin": "^0.8.0",
+    "js-host": "^0.11.4",
+    "nib": "^1.1.0",
+    "node-libs-browser": "^0.5.0",
+    "style-loader": "^0.12.2",
+    "stylus-loader": "^1.1.1",
+    "webpack": "^1.9.6",
+    "webpack-wrapper": "^0.2.2"
+  }
+}

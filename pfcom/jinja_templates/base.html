@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    <title>
+      {%- block meta_title -%}{%- endblock -%}
+      {% if settings.SITE_TITLE %} | {{ settings.SITE_TITLE }}{% endif -%}
+    </title>
+    {% if is_installed('mezzanine.blog') -%}
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ url( "blog_post_feed", "rss" ) }}">
+    <link rel="alternate" type="application/atom+xml" title="Atom" href="{{ url( "blog_post_feed", "atom" ) }}">
+    {%- endif -%}
+    {% compress css %}
+    <link rel="stylesheet" href="{{ static( "css/bootstrap.css" ) }}">
+    {# <link rel="stylesheet" href="{{ static( "css/mezzanine.css" ) }}">
+    <link rel="stylesheet" href="{{ static( "css/bootstrap-theme.css" ) }}"> #}
+    {% if LANGUAGE_BIDI -%}
+    <link rel="stylesheet" href="{{ static( "css/bootstrap-rtl.css" ) }}">
+    {% endif -%}
+    {% if is_installed('cartridge.shop') -%}
+      <link rel="stylesheet" href="{{ static( "css/cartridge.css" ) }}">
+    {% if LANGUAGE_BIDI -%}
+        <link rel="stylesheet" href="{{ static( "css/cartridge.rtl.css" ) }}">
+    {%- endif -%}
+    {% endif -%}
+    {% block extra_css -%}{% endblock -%}
+    {% endcompress -%}
+
+    {% compress js -%}
+    {{ webpack_bundler('js/webpack.config.js').render() }}
+    {#
+    <script src="{{ static( "mezzanine/js/"|add(settings.JQUERY_FILENAME) ) }}"></script>
+    <script src="{{ static( "js/bootstrap.js" ) }}"></script>
+    <script src="{{ static( "js/bootstrap-extras.js" ) }}"></script>
+    #}
+    {% block extra_js -%}{% endblock -%}
+    {% endcompress -%}
+    <!--[if lt IE 9]>
+    <script src="{{ static( "js/html5shiv.js" ) }}"></script>
+    <script src="{{ static( "js/respond.min.js" ) }}"></script>
+    <![endif]-->
+    {% block extra_head -%}{% endblock -%}
+  </head>
+  <body id="{% block body_id %}base{% endblock %}">
+
+  {# TODO: Header #}
+
+  <div class="container">
+  {# Output messages #}
+  {# {% nevercache %} #}
+    {% if messages -%}
+    <div class="messages">
+    {%- for message in messages %}
+      <div class="alert alert-dismissable alert-{{ message.tags }}" data-alert="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{ message }}
+    </div>
+    {% endfor -%}
+    </div>
+    {% endif -%}
+  {# {% endnevercache -%} #}
+  </div>
+
+  {% block main -%}
+  {% endblock -%}
+
+  {% include "includes/footer_scripts.html" %}
+  </body>
+</html>

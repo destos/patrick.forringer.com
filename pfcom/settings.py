@@ -96,7 +96,7 @@ MANAGERS = ADMINS
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -105,7 +105,9 @@ ALLOWED_HOSTS = []
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = None
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#time-zone
+TIME_ZONE = 'America/Chicago'
+
 
 # If you set this to True, Django will use timezone-aware datetimes.
 USE_TZ = True
@@ -123,7 +125,7 @@ LANGUAGES = (
 # A boolean that turns on/off debug mode. When set to ``True``, stack traces
 # are displayed for error pages. Should always be set to ``False`` in
 # production. Best set to ``True`` in local_settings.py
-DEBUG = False
+DEBUG = True
 
 # Whether a user's session cookie expires when the Web browser is closed.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -153,6 +155,7 @@ STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    "webpack.django_integration.WebpackFinder",
 )
 
 # The numeric mode to set newly-uploaded files to. The value should be
@@ -257,6 +260,8 @@ INSTALLED_APPS = (
     # can be moved to a local settings
     'debug_toolbar',
     'django_extensions',
+    'js_host',
+    'webpack',
 )
 
 # List of middleware classes to use. Order is important; in the request phase,
@@ -311,7 +316,7 @@ TEMPLATES = [
         "DIRS": [os.path.join(PROJECT_ROOT, 'jinja_templates')],
         "OPTIONS": {
             "match_extension": ".html",
-            "match_regex": r"^(?!admin|debug_toolbar/).*",
+            "match_regex": r"^(?!admin|debug_toolbar|mezzanine/).*",
             "newstyle_gettext": True,
             "extensions": [
                 "jinja2.ext.do",
@@ -319,7 +324,7 @@ TEMPLATES = [
                 "jinja2.ext.with_",
                 "jinja2.ext.i18n",
                 "jinja2.ext.autoescape",
-                # 'compressor.contrib.jinja2ext.CompressorExtension',
+                'compressor.contrib.jinja2ext.CompressorExtension',
                 "django_jinja.builtins.extensions.CsrfExtension",
                 "django_jinja.builtins.extensions.CacheExtension",
                 "django_jinja.builtins.extensions.TimezoneExtension",
@@ -328,6 +333,7 @@ TEMPLATES = [
                 "django_jinja.builtins.extensions.DjangoFiltersExtension",
                 "django_jinja.builtins.extensions.DjangoExtraFiltersExtension",
                 "extensions.mezzanine_extensions.MezzanineFilterExtension",
+                "extensions.webpack_extensions.WebpackExtensions",
             ],
             "context_processors": TEMPLATE_CONTEXT_PROCESSORS,
             "autoescape": True,
@@ -354,6 +360,24 @@ JINJA2_BYTECODE_CACHE_ENABLE = False
 # Specify custom bytecode cache subclass (default: None)
 # JINJA2_BYTECODE_CACHE_BACKEND = "path.to.you.cache.class"
 
+# Webpack/JS host settings
+WEBPACK = {
+    "BUNDLE_ROOT": STATIC_ROOT,
+    "BUNDLE_URL": STATIC_URL,
+    "WATCH_CONFIG_FILES": DEBUG,
+    "WATCH_SOURCE_FILES": DEBUG,
+}
+
+# Needs configured in production, check docs
+JS_HOST = {
+    "SOURCE_ROOT": os.path.abspath(os.path.join(PROJECT_ROOT,'..')),  # path to host.config.js
+    "USE_MANAGER": DEBUG,
+    "PATH_TO_NODE": '/Users/pat/.nave/installed/0.12.2/bin/node'
+}
+
+# from js_host.conf import settings as js_host_settings
+
+# js_host_settings.configure(**JS_HOST)
 
 #########################
 # OPTIONAL APPLICATIONS #
