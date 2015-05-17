@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <header class="important-header">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading heading">
+              {% block page_header -%}
+              <h1>Intro page Header</h1>
+              <h2 class="subheading">With a subhetting</h2>
+              <span class="meta">Any a meta section</span>
+              {%- endblock %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+{% endblock %}
+
+{% block main %}
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    {% block post_content %}
+    {% endblock %}
+    </div>{# end .col #}
+  </div>{# end .row #}
+{% endblock %}

@@ -14,12 +14,11 @@
     <link rel="alternate" type="application/atom+xml" title="Atom" href="{{ url( "blog_post_feed", "atom" ) }}">
     {%- endif -%}
     {% compress css %}
-    <link rel="stylesheet" href="{{ static( "css/bootstrap.css" ) }}">
-    {# <link rel="stylesheet" href="{{ static( "css/mezzanine.css" ) }}">
-    <link rel="stylesheet" href="{{ static( "css/bootstrap-theme.css" ) }}"> #}
+    {#
     {% if LANGUAGE_BIDI -%}
     <link rel="stylesheet" href="{{ static( "css/bootstrap-rtl.css" ) }}">
     {% endif -%}
+    #}
     {% if is_installed('cartridge.shop') -%}
       <link rel="stylesheet" href="{{ static( "css/cartridge.css" ) }}">
     {% if LANGUAGE_BIDI -%}
@@ -27,8 +26,14 @@
     {%- endif -%}
     {% endif -%}
     {% block extra_css -%}{% endblock -%}
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,300,400,600,700,800' rel='stylesheet' type='text/css'>
     {% endcompress -%}
 
+    {% if is_installed('waffle') %}
+    <script>{{ waffle.wafflejs() }}</script>
+    {% endif %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     {% compress js -%}
     {{ webpack_bundler('js/webpack.config.js').render() }}
     {#
@@ -46,26 +51,92 @@
   </head>
   <body id="{% block body_id %}base{% endblock %}">
 
-  {# TODO: Header #}
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+      <div class="container">
 
-  <div class="container">
-  {# Output messages #}
-  {# {% nevercache %} #}
-    {% if messages -%}
-    <div class="messages">
-    {%- for message in messages %}
-      <div class="alert alert-dismissable alert-{{ message.tags }}" data-alert="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      {{ message }}
-    </div>
-    {% endfor -%}
-    </div>
-    {% endif -%}
-  {# {% endnevercache -%} #}
-  </div>
+        {# toggle for menu #}
+        <div class="navbar-header page-scroll">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-menu">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{{ url('home') }}">{{ settings.SITE_TITLE|default('site name') }}</a>
+        </div>
 
-  {% block main -%}
-  {% endblock -%}
+        {# actual menu #}
+        <div class="collapse navbar-collapse" id="header-menu">
+          <ul class="nav navbar-nav navbar-right">
+            {% for page in page_branch -%}
+              {{page}}
+              {% if not has_home and page.is_primary and forloop.first -%}
+                <li id="primary-menu-home" class="first{% if on_home %} active{% endif %}">
+                    <a href="{{ url( "home" ) }}">{{ _("Home") }}</a>
+                </li>
+              {% endif %}
+              {% if page.in_menu %}
+              <li id="primary-menu-{{ page.html_id }}"
+                  class="{% if page.is_current_or_ascendant %}active{% endif %}{% if forloop.last %} last{% endif %}">
+                  <a href="{{ page.get_absolute_url }}">{{ page.title }}</a>
+              </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    {% block header %}
+    {% endblock %}
+
+    {% block container %}
+    {# If extending container make sure you call {{ super() }} at the top if messages need displayed #}
+    <section class="container">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-dismissable alert-{{ message.tags }}" data-alert="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {{ message }}
+        {% endfor %}
+      {% endif %}
+
+      {% block main %}
+      {% endblock main %}
+
+    </section> <!-- /container -->
+    {% endblock %}
+
+    <hr>
+
+    <footer class="main-footer">
+      <div class="container">
+        <p class="copyright text-center">
+          &copy; 2015 {{ settings.SITE_TITLE|default('site name') }}
+        </p>
+        <p class="footer-links text-center">
+          {#
+          <a href="{{ url('about') }}">about</a>
+          <a href="{{ url('faq') }}">faq</a>
+          <a href="{{ url('contact') }}">contact</a>
+          #}
+          {{ _("Powered by" ) }}
+          <a href="http://mezzanine.jupo.org">Mezzanine</a>{% if is_installed('cartridge.shop') %},
+          <a href="http://cartridge.jupo.org">Cartridge</a>{% endif%}
+          {{ _("and" ) }}
+          <a href="http://www.djangoproject.com">Django</a>
+          <span class="separator">|</span>
+          {{ _("Customized a theme by" ) }} <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Start Bootstrap</a>
+          <span class="separator">|</span>
+          <a href="https://github.com/destos/patrick.forringer.com">{{ _("Source code") }}</a>
+          {% if is_installed('mezzanine.mobile') %}
+          <span class="separator">|</span>
+          <a href="{{ url( "set_device" "mobile" ) }}?next={{ request.path }}">{{ _("View Mobile Site" ) }}</a>
+          {% endif %}
+        </p>
+      </div>
+    </footer>
+    {% block modal %}{% endblock modal %}
 
   {% include "includes/footer_scripts.html" %}
   </body>

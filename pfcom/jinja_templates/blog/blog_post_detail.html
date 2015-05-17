@@ -1,4 +1,4 @@
-{% extends "blog/blog_post_list.html" %}
+{% extends "blog/base_post.html" %}
 
 {% block meta_title -%}
     {{ blog_post.meta_title -}}
@@ -17,29 +17,26 @@
 {{ blog_post.description }}
 {# {% endmetablock %} #}{% endblock %}
 
-{% block title %}
+{% block page_header %}
 {# {% editable blog_post.title %} #}
-{{ blog_post.title }}
+  <h1>{{ blog_post.title }}</h1>
 {# {% endeditable %} #}
+  <h2>Sub heading</h2>
+  <span class="meta">
+    {{ _("Posted by") }}:
+    {% set author = blog_post.user %}
+    <a href="{{ url( "blog_post_list_author", author )}}">{{ author.get_full_name()|default(author.username) }}</a>
+    {% trans sometime=blog_post.publish_date|timesince %}{{ sometime }} ago{% endtrans %}
+  </span>
 {% endblock %}
 
 {% block breadcrumb_menu %}
-{{ block.super }}
+{{ super() }}
 <li class="active">{{ blog_post.title }}</li>
 {% endblock %}
 
-{% block main %}
+{% block post_content %}
 
-    {% block blog_post_detail_postedby %}
-    {# {% editable blog_post.publish_date %} #}
-    <h6 class="post-meta">
-        {{ _("Posted by") }}:
-        {% set author = blog_post.user %}
-        <a href="{{ url( "blog_post_list_author", author )}}">{{ author.get_full_name()|default(author.username) }}</a>
-        {% trans sometime=blog_post.publish_date|timesince %}{{ sometime }} ago{% endtrans %}
-    </h6>
-    {# {% endeditable %} #}
-    {% endblock %}
     {% block blog_post_detail_commentlink %}
     <p>
         {% if blog_post.allow_comments %}
@@ -112,13 +109,13 @@
         {% set previous = blog_post.get_previous_by_publish_date() %}
         {% if previous %}
             <li class="previous">
-                <a href="{{ previous.get_absolute_url() }}">&larr; {{ previous }}</a>
+                <a href="{{ previous.get_absolute_url() }}" class="btn btn-default">&larr; {{ previous }}</a>
             </li>
         {% endif %}
         {% set next = blog_post.get_next_by_publish_date() %}
         {% if next %}
             <li class="next">
-                <a href="{{ next.get_absolute_url() }}">{{ next }} &rarr;</a>
+                <a href="{{ next.get_absolute_url() }}" class="btn btn-default">{{ next }} &rarr;</a>
             </li>
         {% endif %}
         </ul>

@@ -60,9 +60,9 @@ docs/_build/
 target/
 
 # ignored folders
-static/
+/static/
 local_settings.py
 jinja2/
 templates/
 node_modules/
-pfcom/static/webpack/
+/pfcom/static/webpack/
