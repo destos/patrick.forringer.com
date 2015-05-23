@@ -154,8 +154,7 @@ AUTHENTICATION_BACKENDS = ("mezzanine.core.auth_backends.MezzanineBackend",)
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    "webpack.django_integration.WebpackFinder",
+    # "django.contrib.staticfiles.finders.DefaultStorageFinder",
 )
 
 # The numeric mode to set newly-uploaded files to. The value should be
@@ -191,6 +190,8 @@ DATABASES = {
 
 import os
 
+BASE_DIR = os.path.dirname(os.path.join(os.path.dirname(__file__), "../"))
+
 # Full filesystem path to the project.
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -211,6 +212,10 @@ STATIC_URL = "/static/"
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL.strip("/"))
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'assets'),
+)
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -260,8 +265,7 @@ INSTALLED_APPS = (
     # can be moved to a local settings
     'debug_toolbar',
     'django_extensions',
-    'js_host',
-    'webpack',
+    'webpack_loader',
 )
 
 # List of middleware classes to use. Order is important; in the request phase,
@@ -333,7 +337,7 @@ TEMPLATES = [
                 "django_jinja.builtins.extensions.DjangoFiltersExtension",
                 "django_jinja.builtins.extensions.DjangoExtraFiltersExtension",
                 "extensions.mezzanine_extensions.MezzanineFilterExtension",
-                "extensions.webpack_extensions.WebpackExtensions",
+                "webpack_loader.contrib.jinja2ext.WebpackExtension",
             ],
             "context_processors": TEMPLATE_CONTEXT_PROCESSORS,
             "autoescape": True,
@@ -360,24 +364,12 @@ JINJA2_BYTECODE_CACHE_ENABLE = False
 # Specify custom bytecode cache subclass (default: None)
 # JINJA2_BYTECODE_CACHE_BACKEND = "path.to.you.cache.class"
 
-# Webpack/JS host settings
-WEBPACK = {
-    "BUNDLE_ROOT": STATIC_ROOT,
-    "BUNDLE_URL": STATIC_URL,
-    "WATCH_CONFIG_FILES": DEBUG,
-    "WATCH_SOURCE_FILES": DEBUG,
+# Webpack
+
+WEBPACK_LOADER = {
+    'BASE_URL': STATIC_URL + 'bundles/',
+    'STATS_FILE': os.path.abspath(os.path.join(PROJECT_ROOT, '../assets/webpack-stats.json')),
 }
-
-# Needs configured in production, check docs
-JS_HOST = {
-    "SOURCE_ROOT": os.path.abspath(os.path.join(PROJECT_ROOT,'..')),  # path to host.config.js
-    "USE_MANAGER": DEBUG,
-    "PATH_TO_NODE": '/Users/pat/.nave/installed/0.12.2/bin/node'
-}
-
-# from js_host.conf import settings as js_host_settings
-
-# js_host_settings.configure(**JS_HOST)
 
 #########################
 # OPTIONAL APPLICATIONS #

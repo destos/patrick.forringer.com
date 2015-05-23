@@ -35,7 +35,7 @@
     {% endif %}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     {% compress js -%}
-    {{ webpack_bundler('js/webpack.config.js').render() }}
+    {{ render_bundle('main') }}
     {#
     <script src="{{ static( "mezzanine/js/"|add(settings.JQUERY_FILENAME) ) }}"></script>
     <script src="{{ static( "js/bootstrap.js" ) }}"></script>

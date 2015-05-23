@@ -11,5 +11,4 @@ django-compressor==1.5
 
 # extra
 django-extensions==1.5.2
-webpack==4.1.1
-js-host==0.1.4
+django-webpack-loader==0.0.5
