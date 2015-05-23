@@ -66,3 +66,7 @@ jinja2/
 templates/
 node_modules/
 /pfcom/static/webpack/
+
+# deploy stuff that will be removed locally at some point
+/deploy/
+fabfile.py
