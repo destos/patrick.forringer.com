@@ -108,13 +108,13 @@
         {% set previous = blog_post.get_previous_by_publish_date() %}
         {% if previous %}
           <li class="previous">
-            <a href="{{ previous.get_absolute_url() }}" class="btn btn-boxy btn-lg btn-default" title="{{ previous }}"><span aria-hidden="true">&larr;</span> Newer Posts</a>
+            <a href="{{ previous.get_absolute_url() }}" class="btn btn-boxy btn-lg btn-default" title="{{ previous }}"><span aria-hidden="true">&larr;</span> Older Posts</a>
           </li>
         {% endif %}
         {% set next = blog_post.get_next_by_publish_date() %}
         {% if next %}
           <li class="next">
-            <a href="{{ next.get_absolute_url() }}" class="btn btn-boxy btn-lg btn-default" title="{{ next }}">Older Posts <span aria-hidden="true">&rarr;</span></a>
+            <a href="{{ next.get_absolute_url() }}" class="btn btn-boxy btn-lg btn-default" title="{{ next }}">Newer Posts <span aria-hidden="true">&rarr;</span></a>
           </li>
         {% endif %}
         </ul>
