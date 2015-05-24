@@ -2,7 +2,7 @@
 
 {% block meta_title %}
     {% if page %}
-        {{ page.meta_title }}
+        {{ page.meta_title() }}
     {% else %}
         {{ _("Blog") }}
     {% endif %}
@@ -10,13 +10,8 @@
 
 {% block meta_keywords %}
 {# {% metablock %} #}
-{#
-{% keywords_for page as keywords %}
-    {% for keyword in keywords %}
-        {% if not forloop.first %}, {% endif %}
-        {{ keyword }}
-    {% endfor %}
-#}
+{% set tags = keywords_for(page) %}
+{% for keyword in keywords %}{% if not loop.first %}, {% endif %}{{ keyword }}{% endfor %}
 {# {% endmetablock %} #}
 {% endblock %}
 
@@ -47,7 +42,7 @@
     {% else %}{% if year or month %}
         {% if month %}{{ month }}, {% endif %}{{ year }}
     {% else %}{% if author %}
-        {{ _("Author:") }} {{ author.get_full_name|default(author.username) }}
+        {{ _("Author:") }} {{ author.get_full_name()|default(author.username) }}
     {% endif %}{% endif %}{% endif %}{% endif %}
     </li>
     {% endif %}
@@ -67,7 +62,7 @@
         {{ year }}
     {% else %}{% if author %}
         {{ _("Viewing posts by" ) }}
-        {{ author.get_full_name|default(author.username) }}
+        {{ author.get_full_name()|default(author.username) }}
     {% endif %}{% endif %}{% endif %}{% endif %}
     {% endblock %}
     </p>
@@ -85,24 +80,24 @@
 
 
 {% for blog_post in blog_posts.object_list %}
-    {% block blog_post_list_post_title %}
+    {% block blog_post_list_post_title scoped %}
     {# {# {% editable blog_post.title %} #} #}
     <h2>
         <a href="{{ blog_post.get_absolute_url() }}">{{ blog_post.title }}</a>
     </h2>
     {# {% endeditable %} #}
     {% endblock %}
-    {% block blog_post_list_post_metainfo %}
+    {% block blog_post_list_post_metainfo scoped %}
     {# {% editable blog_post.publish_date %} #}
     <h6 class="post-meta">
         {{ _("Posted by") }}:
-        {% set authro = blog_post.user %}
-        <a href="{{ url( "blog_post_list_author", author ) }}">{{ author.get_full_name|default(author.username) }}</a>
+        {% set author = blog_post.user %}
+        <a href="{{ url( "blog_post_list_author", author ) }}">{{ author.get_full_name()|default(author.username) }}</a>
         {% set categories = blog_post.categories.all() %}
         {% if categories %}
             {{ _("in") }}
             {% for category in categories %}
-                <a href="{{ url( "blog_post_list_category", category.slug ) }}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
+                <a href="{{ url( "blog_post_list_category", category.slug ) }}">{{ category }}</a>{% if not loop.last %}, {% endif %}
             {% endfor %}
         {% endif %}
         {% trans sometime=blog_post.publish_date|timesince %}{{ sometime }} ago{% endtrans %}
@@ -120,40 +115,38 @@
     {% endif %}
     #}
 
-    {% block blog_post_list_post_content %}
+    {% block blog_post_list_post_content scoped %}
     {# {% editable blog_post.content %} #}
-    {{ blog_post.description_from_content|safe }}
+    {{ blog_post.description_from_content()|safe }}
     {# {% endeditable %} #}
     {% endblock %}
 
-    {% block blog_post_list_post_links %}
+    {% block blog_post_list_post_links scoped %}
     <div class="blog-list-detail">
-    {#
-        {% keywords_for blog_post as tags %}
+      {% set tags = keywords_for(blog_post) %}
         {% if tags %}
         <ul class="list-inline tags">
-        {{ _("Tags" %}:
+        {{ _("Tags") }}:
         {% for tag in tags %}
-        <li><a href="{{ url( "blog_post_list_tag" tag.slug %}" class="tag">{{ tag }}</a>{% if not forloop.last %}, {% endif %}</li>
+        <li><a href="{{ url( "blog_post_list_tag", tag.slug) }}" class="tag">{{ tag }}</a>{% if not loop.last %}, {% endif %}</li>
         {% endfor %}
         </ul>
         {% endif %}
-    #}
         <p>
-            <a href="{{ blog_post.get_absolute_url }}">{{ _("read more") }}</a>
-            {% if blog_post.allow_comments %} /
+            <a href="{{ blog_post.get_absolute_url() }}">{{ _("read more") }}</a>
+            {% if blog_post.allow_comments %}
                 {% if settings.COMMENTS_DISQUS_SHORTNAME %}
-                    <a href="{{ blog_post.get_absolute_url }}#disqus_thread"
+                    <a href="{{ blog_post.get_absolute_url() }}#disqus_thread"
                         data-disqus-identifier="{# {% disqus_id_for blog_post %} #}">
                         {{ _("Comments") }}
                     </a>
                 {% else %}
-                    <a href="{{ blog_post.get_absolute_url }}#comments">
-                        {% trans comments_count=blog_post.commends_count %}
+                    <a href="{{ blog_post.get_absolute_url() }}#comments">
+                        {%- trans comments_count=blog_post.comments_count -%}
                             {{comments_count}} comment
-                        {% pluralize %}
-                            {{comments_count}} commends
-                        {% endtrans %}
+                        {%- pluralize -%}
+                            {{comments_count}} comments
+                        {%- endtrans -%}
                     </a>
                 {% endif %}
             {% endif %}

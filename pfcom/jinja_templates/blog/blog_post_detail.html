@@ -1,15 +1,13 @@
 {% extends "blog/base_post.html" %}
 
 {% block meta_title -%}
-    {{ blog_post.meta_title -}}
+    {{ blog_post.meta_title() -}} {{ super() }}
 {% endblock %}
 
 {% block meta_keywords %}
 {# {% metablock %} #}
-{#
-{% keywords_for blog_post as tags %}
-{% for tag in tags %}{% if not forloop.first %}, {% endif %}{{ tag }}{% endfor %}
-#}
+{% set tags = keywords_for(blog_post) %}
+{% for tag in tags %}{% if not loop.first %}, {% endif %}{{ tag }}{% endfor %}
 {# {% endmetablock %} #}
 {% endblock %}
 
@@ -21,7 +19,7 @@
 {# {% editable blog_post.title %} #}
   <h1>{{ blog_post.title }}</h1>
 {# {% endeditable %} #}
-  <h2>Sub heading</h2>
+{# <h2>Sub heading</h2> #}
   <span class="meta">
     {{ _("Posted by") }}:
     {% set author = blog_post.user %}
@@ -70,24 +68,24 @@
     #}
 
     {% block blog_post_detail_content %}
-    {#{% editable blog_post.content %} #}
+    {# {% editable blog_post.content %} #}
     {{ blog_post.content|richtext_filters|safe }}
     {# {% endeditable %} #}
     {% endblock %}
 
-    {#
     {% block blog_post_detail_keywords %}
-    {% keywords_for blog_post as tags %}
+    {% set tags = keywords_for(blog_post) %}
     {% if tags %}
     <ul class="list-inline tags">
         <li>{{ _("Tags") }}:</li>
         {% for tag in tags -%}
-        <li><a href="{{ url( "blog_post_list_tag" tag.slug %}">{{ tag }}</a>{% if not forloop.last %}, {% endif %}</li>
+        <li><a href="{{ url( "blog_post_list_tag", tag.slug) }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}</li>
         {% endfor -%}
     </ul>
     {% endif %}
     {% endblock %}
 
+    {#
     {% block blog_post_detail_rating %}
     <div class="panel panel-default rating">
         <div class="panel-body">
@@ -105,33 +103,35 @@
     #}
 
     {% block blog_post_previous_next %}
+      <nav>
         <ul class="pager">
         {% set previous = blog_post.get_previous_by_publish_date() %}
         {% if previous %}
-            <li class="previous">
-                <a href="{{ previous.get_absolute_url() }}" class="btn btn-default">&larr; {{ previous }}</a>
-            </li>
+          <li class="previous">
+            <a href="{{ previous.get_absolute_url() }}" class="btn btn-boxy btn-lg btn-default" title="{{ previous }}"><span aria-hidden="true">&larr;</span> Newer Posts</a>
+          </li>
         {% endif %}
         {% set next = blog_post.get_next_by_publish_date() %}
         {% if next %}
-            <li class="next">
-                <a href="{{ next.get_absolute_url() }}" class="btn btn-default">{{ next }} &rarr;</a>
-            </li>
+          <li class="next">
+            <a href="{{ next.get_absolute_url() }}" class="btn btn-boxy btn-lg btn-default" title="{{ next }}">Older Posts <span aria-hidden="true">&rarr;</span></a>
+          </li>
         {% endif %}
         </ul>
+      </nav>
     {% endblock %}
 
     {% block blog_post_detail_related_posts %}
-        {% if blog_post.related_posts.all() %}
-        <div id="related-posts">
-            <h3>{{ _('Related posts') }}</h3>
+      {% if blog_post.related_posts.all() %}
+        <nav class="posts-group">
+          <h3>{{ _('Related posts') }}</h3>
             <ul class="list-unstyled">
             {% for post in blog_post.related_posts.all() %}
-                 <li><a href="{{ post.get_absolute_url() }}">{{ post.title }}</a></li>
+              <li><a href="{{ post.get_absolute_url() }}">{{ post.title }}</a></li>
             {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
     {% endblock %}
 
     {#

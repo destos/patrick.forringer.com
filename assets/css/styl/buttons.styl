@@ -1,27 +1,28 @@
 // Button Styles
 
 .btn
-    sans-serif()
-    text-transform: uppercase
-    font-size: 14px
-    font-weight: 800
-    letter-spacing: 1px
-    border-radius: 1px
-    padding: 15px 25px
-    color: black
+  sans-serif()
 
-.btn-lg
-    font-size: 16px
-    padding: 25px 35px
+.btn.btn-boxy
+  text-transform: uppercase
+  font-size: 14px
+  font-weight: 600
+  letter-spacing: 1px
+  border-radius: 1px
+  padding: 15px 25px
+  color: black
 
-.btn-default
+  &.btn-lg
+    font-size: 15px
+    padding: 17px 27px
+
+  &.btn-default
     &:hover,
     &:focus
-        background-color: $brand-primary
-        border: 1px solid $brand-primary
-        color: white
+      background-color: $brand-primary
+      border: 1px solid $brand-primary
+      color: white
     &.disabled
-        color: $gray
-        background-color: $gray-dark
-        cursor: not-allowed
-
+      color: $gray
+      background-color: $gray-dark
+      cursor: not-allowed
