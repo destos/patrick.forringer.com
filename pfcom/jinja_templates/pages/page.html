@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-{# {% load mezzanine_tags keyword_tags %}#}
 
 {% block meta_title %}{{ page.meta_title }}{% endblock %}
 
 {% block meta_keywords %}
 {# {% metablock %} #}
 {% set keywords = keywords_for(page) %}
-{% for keyword in keywords %}{% if not loop.first %}, {% endif %}{{ keyword }}{% endfor %}{% endfor %}
+{% for keyword in keywords %}{% if not loop.first %}, {% endif %}{{ keyword }}{% endfor %}
 {# {% endmetablock %} #}
 {% endblock %}
 

@@ -66,24 +66,9 @@
         </div>
 
         {# actual menu #}
-        <div class="collapse navbar-collapse" id="header-menu">
-          <ul class="nav navbar-nav navbar-right">
-            {% for page in page_branch -%}
-              {{page}}
-              {% if not has_home and page.is_primary and loop.first -%}
-                <li id="primary-menu-home" class="first{% if on_home %} active{% endif %}">
-                    <a href="{{ url( "home" ) }}">{{ _("Home") }}</a>
-                </li>
-              {% endif %}
-              {% if page.in_menu %}
-              <li id="primary-menu-{{ page.html_id }}"
-                  class="{% if page.is_current_or_ascendant %}active{% endif %}{% if loop.last %} last{% endif %}">
-                  <a href="{{ page.get_absolute_url }}">{{ page.title }}</a>
-              </li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
+        <nav class="collapse navbar-collapse" id="header-menu">
+            {{ page_menu('pages/menus/primary.html') }}
+        </nav>
       </div>
     </nav>
 
@@ -100,6 +85,12 @@
           {{ message }}
         {% endfor %}
       {% endif %}
+
+      <ul class="breadcrumb">
+      {% block breadcrumb_menu %}
+        {{ page_menu("pages/menus/breadcrumb.html") }}
+      {% endblock %}
+      </ul>
 
       {% block main %}
       {% endblock main %}

@@ -70,3 +70,5 @@ assets/bundles/
 # deploy stuff that will be removed locally at some point
 /deploy/
 fabfile.py
+
+*.sublime-workspace

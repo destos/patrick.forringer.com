@@ -108,7 +108,6 @@ ALLOWED_HOSTS = ['*']
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#time-zone
 TIME_ZONE = 'America/Chicago'
 
-
 # If you set this to True, Django will use timezone-aware datetimes.
 USE_TZ = True
 
@@ -321,6 +320,8 @@ TEMPLATES = [
         "OPTIONS": {
             "match_extension": ".html",
             "match_regex": r"^(?!admin|debug_toolbar|mezzanine/).*",
+            # fixes things in admin but not live site, figure out
+            # "match_regex": r"^(?!admin|debug_toolbar|mezzanine/)/.*",
             "newstyle_gettext": True,
             "extensions": [
                 "jinja2.ext.do",
@@ -336,7 +337,7 @@ TEMPLATES = [
                 "django_jinja.builtins.extensions.StaticFilesExtension",
                 "django_jinja.builtins.extensions.DjangoFiltersExtension",
                 "django_jinja.builtins.extensions.DjangoExtraFiltersExtension",
-                "extensions.mezzanine_extensions.MezzanineFilterExtension",
+                "extensions.mezzanine_extensions.MezzanineExtension",
                 "webpack_loader.contrib.jinja2ext.WebpackExtension",
             ],
             "context_processors": TEMPLATE_CONTEXT_PROCESSORS,
